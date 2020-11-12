@@ -18,16 +18,16 @@ A simple Minecraft Docker client, to visualize and manage Docker containers.
 
 	The Minecraft client hasn't been modified, just get the official release.
 
-2. **Pull or build Dockercraft image:** (an official image will be available soon)
+2. **Build Dockercraft image:**
 
 	```
-	docker pull gaetan/dockercraft
+	git clone git@github.com:dannyhpy/dockercraft.git
+	cd dockercraft
+	docker build -t dockercraft .
 	```
-	or
-
+	or, using `docker-compose`
 	```
-	git clone git@github.com:docker/dockercraft.git
-	docker build -t gaetan/dockercraft dockercraft
+	docker-compose up -d --build
 	```
 3. **Run Dockercraft container:**
 
@@ -35,7 +35,7 @@ A simple Minecraft Docker client, to visualize and manage Docker containers.
 	docker run -t -i -d -p 25565:25565 \
 	-v /var/run/docker.sock:/var/run/docker.sock \
 	--name dockercraft \
-	gaetan/dockercraft
+	dockercraft
 	```
 
 	Mounting `/var/run/docker.sock` inside the container is necessary to send requests to the Docker remote API.
@@ -74,7 +74,7 @@ You can pass these additional arguments to your `docker run` command:
 docker run -t -i -d -p 25565:25565 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --name dockercraft \
-    gaetan/dockercraft <biome> <groundlevel> <sealevel> <finishers>
+    dockercraft <biome> <groundlevel> <sealevel> <finishers>
 ```
 
 Here are some examples:

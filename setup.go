@@ -44,22 +44,16 @@ func (d *Daemon) GetDockerBinary() error {
 			url = rcDownloadURL
 		}
 
-		// the method of downloading it is different for version >= 1.11.0
-		// (in which case it is an archive containing multiple binaries)
-		versionComp, err := compareVersions(d.Version, "1.11.0")
+		// NOTE(dannyhpy): compatible with latest stable Docker releases
+		// not tested with test releases though
+
+		// NOTE(dannyhpy): these changes break compatibility for
+		// older Docker versions
+		version := strings.Replace(d.Version, "-ce", "", 1)
+
+		err = getClient(out, url+version+".tgz", extractClient)
 		if err != nil {
 			return err
-		}
-		if versionComp >= 0 {
-			err = getClient(out, url+d.Version+".tgz", extractClient)
-			if err != nil {
-				return err
-			}
-		} else {
-			err = getClient(out, url+d.Version, copyClient)
-			if err != nil {
-				return err
-			}
 		}
 
 		err = os.Chmod(filename, 0700)
@@ -113,11 +107,6 @@ func getClient(out *os.File, URL string, cp copier) error {
 	}
 	defer resp.Body.Close()
 	err = cp(out, resp)
-	return err
-}
-
-func copyClient(out *os.File, resp *http.Response) error {
-	_, err := io.Copy(out, resp.Body)
 	return err
 }
 
